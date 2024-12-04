@@ -1,0 +1,472 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_TITLE_LENGTH 100
+#define MAX_AUTHOR_LENGTH 50
+#define MAX_BOOKS 100
+#define ADMIN_EMAIL "admin"
+#define ADMIN_PASSWORD "admin"
+
+struct Book {
+    char title[MAX_TITLE_LENGTH];
+    char author[MAX_AUTHOR_LENGTH];
+    int year;
+};
+
+// Function prototypes
+int adminLogin();
+int studentLogin();
+void adminMenu(struct Book library[], int *numBooks);
+void studentMenu(struct Book library[], int numBooks);
+void addBook(struct Book library[], int *numBooks);
+void displayBooks(struct Book library[], int numBooks);
+void searchBook(struct Book library[], int numBooks, char searchTitle[]);
+void removeBook(struct Book library[], int *numBooks, char removeTitle[]);
+void updateBook(struct Book library[], int numBooks);
+void sortBooks(struct Book library[], int numBooks, int criteria);
+void saveLibrary(struct Book library[], int numBooks, const char *filename);
+void loadLibrary(struct Book library[], int *numBooks, const char *filename);
+void authorBookCount(struct Book library[], int numBooks);
+void displayStatistics(struct Book library[], int numBooks);
+void clearLibrary(struct Book library[], int *numBooks);
+
+int main() {
+    struct Book library[MAX_BOOKS];
+    int numBooks = 0;
+
+    printf("Library Management System\n");
+    printf("--------------------------\n");
+
+    int userType;
+    while (1) {
+        printf("\nLogin Options:\n");
+        printf("1. Admin Login\n");
+        printf("2. Student Login\n");
+        printf("3. Quit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &userType);
+        getchar(); // Clear newline from input buffer
+
+        switch (userType) {
+            case 1:
+                if (adminLogin()) {
+                    adminMenu(library, &numBooks);
+                }
+                break;
+            case 2:
+                if (studentLogin()) {
+                    studentMenu(library, numBooks);
+                }
+                break;
+            case 3:
+                printf("Goodbye!\n");
+                exit(0);
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+// Admin Login Function
+int adminLogin() {
+    char email[50];
+    char password[50];
+
+    printf("\nAdmin Login\n");
+    printf("-----------\n");
+    printf("Enter email: ");
+    fgets(email, sizeof(email), stdin);
+    email[strlen(email) - 1] = '\0'; // Remove trailing newline
+
+    printf("Enter password: ");
+    fgets(password, sizeof(password), stdin);
+    password[strlen(password) - 1] = '\0'; // Remove trailing newline
+
+    if (strcmp(email, ADMIN_EMAIL) == 0 && strcmp(password, ADMIN_PASSWORD) == 0) {
+        printf("Login successful!\n");
+        return 1; // Authentication successful
+    } else {
+        printf("Invalid email or password.\n");
+        return 0; // Authentication failed
+    }
+}
+
+// Student Login Function
+int studentLogin() {
+    char email[50];
+    char password[50];
+
+    printf("\nStudent Login\n");
+    printf("-------------\n");
+    printf("Enter email: ");
+    fgets(email, sizeof(email), stdin);
+    email[strlen(email) - 1] = '\0'; // Remove trailing newline
+
+    printf("Enter password: ");
+    fgets(password, sizeof(password), stdin);
+    password[strlen(password) - 1] = '\0'; // Remove trailing newline
+
+    printf("Login successful as Student!\n");
+    return 1;
+}
+
+// Admin Menu
+void adminMenu(struct Book library[], int *numBooks) {
+    int choice;
+
+    while (1) {
+        printf("\nAdmin Options:\n");
+        printf("1. Add a book\n");
+        printf("2. Display all books\n");
+        printf("3. Search for a book\n");
+        printf("4. Remove a book\n");
+        printf("5. Update book information\n");
+        printf("6. Sort books\n");
+        printf("7. Save library to file\n");
+        printf("8. Load library from file\n");
+        printf("9. Display book count by author\n");
+        printf("10. Display library statistics\n");
+        printf("11. Clear all books\n");
+        printf("12. Quit to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar(); // Clear newline from input buffer
+
+        char searchTitle[MAX_TITLE_LENGTH];
+        char removeTitle[MAX_TITLE_LENGTH];
+
+        switch (choice) {
+            case 1:
+                addBook(library, numBooks);
+                break;
+            case 2:
+                displayBooks(library, *numBooks);
+                break;
+            case 3:
+                printf("Enter the title to search: ");
+                fgets(searchTitle, sizeof(searchTitle), stdin);
+                searchTitle[strlen(searchTitle) - 1] = '\0'; // Remove trailing newline
+                searchBook(library, *numBooks, searchTitle);
+                break;
+            case 4:
+                printf("Enter the title to remove: ");
+                fgets(removeTitle, sizeof(removeTitle), stdin);
+                removeTitle[strlen(removeTitle) - 1] = '\0'; // Remove trailing newline
+                removeBook(library, numBooks, removeTitle);
+                break;
+            case 5:
+                updateBook(library, *numBooks);
+                break;
+            case 6:
+                printf("Sort by: 1. Title 2. Author 3. Year\nEnter choice: ");
+                int criteria;
+                scanf("%d", &criteria);
+                getchar(); // Clear newline from input buffer
+                sortBooks(library, *numBooks, criteria);
+                break;
+            case 7:
+                saveLibrary(library, *numBooks, "library.txt");
+                break;
+            case 8:
+                loadLibrary(library, numBooks, "library.txt");
+                break;
+            case 9:
+                authorBookCount(library, *numBooks);
+                break;
+            case 10:
+                displayStatistics(library, *numBooks);
+                break;
+            case 11:
+                clearLibrary(library, numBooks);
+                break;
+            case 12:
+                return;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
+// Student Menu
+void studentMenu(struct Book library[], int numBooks) {
+    int choice;
+
+    while (1) {
+        printf("\nStudent Options:\n");
+        printf("1. Search for a book\n");
+        printf("2. Display all books\n");
+        printf("3. Display book count by author\n");
+        printf("4. Display library statistics\n");
+        printf("5. Quit to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar(); // Clear newline from input buffer
+
+        char searchTitle[MAX_TITLE_LENGTH];
+
+        switch (choice) {
+            case 1:
+                printf("Enter the title to search: ");
+                fgets(searchTitle, sizeof(searchTitle), stdin);
+                searchTitle[strlen(searchTitle) - 1] = '\0'; // Remove trailing newline
+                searchBook(library, numBooks, searchTitle);
+                break;
+            case 2:
+                displayBooks(library, numBooks);
+                break;
+            case 3:
+                authorBookCount(library, numBooks);
+                break;
+            case 4:
+                displayStatistics(library, numBooks);
+                break;
+            case 5:
+                return;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
+// Book management functions
+void addBook(struct Book library[], int *numBooks) {
+    if (*numBooks >= MAX_BOOKS) {
+        printf("Library is full. Cannot add more books.\n");
+        return;
+    }
+
+    struct Book newBook;
+    printf("Enter book title: ");
+    fgets(newBook.title, sizeof(newBook.title), stdin);
+    newBook.title[strlen(newBook.title) - 1] = '\0'; // Remove trailing newline
+
+    printf("Enter author: ");
+    fgets(newBook.author, sizeof(newBook.author), stdin);
+    newBook.author[strlen(newBook.author) - 1] = '\0'; // Remove trailing newline
+
+    printf("Enter publication year: ");
+    scanf("%d", &newBook.year);
+    getchar(); // Clear newline from input buffer
+
+    library[*numBooks] = newBook;
+    (*numBooks)++;
+    printf("Book added successfully!\n");
+}
+
+void displayBooks(struct Book library[], int numBooks) {
+    if (numBooks == 0) {
+        printf("Library is empty.\n");
+        return;
+    }
+
+    printf("Library Books:\n");
+    printf("--------------------------------------------------\n");
+    printf("%-30s %-20s %-4s\n", "Title", "Author", "Year");
+    printf("--------------------------------------------------\n");
+
+    for (int i = 0; i < numBooks; i++) {
+        printf("%-30s %-20s %d\n", library[i].title, library[i].author, library[i].year);
+    }
+}
+
+void searchBook(struct Book library[], int numBooks, char searchTitle[]) {
+    int found = 0;
+
+    for (int i = 0; i < numBooks; i++) {
+        if (strcasecmp(library[i].title, searchTitle) == 0) {
+            found = 1;
+            printf("Book found:\nTitle: %s\nAuthor: %s\nYear: %d\n", library[i].title, library[i].author, library[i].year);
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("No book found with the title \"%s\".\n", searchTitle);
+    }
+}
+
+void removeBook(struct Book library[], int *numBooks, char removeTitle[]) {
+    int found = 0;
+
+    for (int i = 0; i < *numBooks; i++) {
+        if (strcasecmp(library[i].title, removeTitle) == 0) {
+            found = 1;
+            for (int j = i; j < *numBooks - 1; j++) {
+                library[j] = library[j + 1];
+            }
+            (*numBooks)--;
+            printf("Book \"%s\" removed successfully!\n", removeTitle);
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("No book found with the title \"%s\".\n", removeTitle);
+    }
+}
+
+void updateBook(struct Book library[], int numBooks) {
+    char updateTitle[MAX_TITLE_LENGTH];
+    printf("Enter the title of the book to update: ");
+    fgets(updateTitle, sizeof(updateTitle), stdin);
+    updateTitle[strlen(updateTitle) - 1] = '\0'; // Remove trailing newline
+
+    int found = 0;
+
+    for (int i = 0; i < numBooks; i++) {
+        if (strcasecmp(library[i].title, updateTitle) == 0) {
+            found = 1;
+
+            printf("Enter new title (or press Enter to keep the current): ");
+            char newTitle[MAX_TITLE_LENGTH];
+            fgets(newTitle, sizeof(newTitle), stdin);
+            newTitle[strlen(newTitle) - 1] = '\0'; // Remove trailing newline
+            if (strlen(newTitle) > 0) {
+                strcpy(library[i].title, newTitle);
+            }
+
+            printf("Enter new author (or press Enter to keep the current): ");
+            char newAuthor[MAX_AUTHOR_LENGTH];
+            fgets(newAuthor, sizeof(newAuthor), stdin);
+            newAuthor[strlen(newAuthor) - 1] = '\0'; // Remove trailing newline
+            if (strlen(newAuthor) > 0) {
+                strcpy(library[i].author, newAuthor);
+            }
+
+            printf("Enter new year (or -1 to keep the current): ");
+            int newYear;
+            scanf("%d", &newYear);
+            getchar(); // Clear newline from input buffer
+            if (newYear != -1) {
+                library[i].year = newYear;
+            }
+
+            printf("Book updated successfully!\n");
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("No book found with the title \"%s\".\n", updateTitle);
+    }
+}
+
+void sortBooks(struct Book library[], int numBooks, int criteria) {
+    struct Book temp;
+
+    for (int i = 0; i < numBooks - 1; i++) {
+        for (int j = 0; j < numBooks - i - 1; j++) {
+            int compare = 0;
+            if (criteria == 1) {
+                compare = strcmp(library[j].title, library[j + 1].title);
+            } else if (criteria == 2) {
+                compare = strcmp(library[j].author, library[j + 1].author);
+            } else if (criteria == 3) {
+                compare = library[j].year - library[j + 1].year;
+            }
+
+            if (compare > 0) {
+                temp = library[j];
+                library[j] = library[j + 1];
+                library[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("Books sorted successfully!\n");
+}
+
+void saveLibrary(struct Book library[], int numBooks, const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error saving library to file.\n");
+        return;
+    }
+
+    for (int i = 0; i < numBooks; i++) {
+        fprintf(file, "%s|%s|%d\n", library[i].title, library[i].author, library[i].year);
+    }
+
+    fclose(file);
+    printf("Library saved to \"%s\" successfully!\n", filename);
+}
+
+void loadLibrary(struct Book library[], int *numBooks, const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error loading library from file.\n");
+        return;
+    }
+
+    *numBooks = 0;
+    while (fscanf(file, " %99[^|]|%49[^|]|%d\n", library[*numBooks].title, library[*numBooks].author, &library[*numBooks].year) == 3) {
+        (*numBooks)++;
+    }
+
+    fclose(file);
+    printf("Library loaded from \"%s\" successfully!\n", filename);
+}
+
+void authorBookCount(struct Book library[], int numBooks) {
+    if (numBooks == 0) {
+        printf("Library is empty.\n");
+        return;
+    }
+
+    int count[MAX_BOOKS] = {0};
+    char authors[MAX_BOOKS][MAX_AUTHOR_LENGTH];
+    int uniqueAuthors = 0;
+
+    for (int i = 0; i < numBooks; i++) {
+        int found = 0;
+        for (int j = 0; j < uniqueAuthors; j++) {
+            if (strcmp(authors[j], library[i].author) == 0) {
+                count[j]++;
+                found = 1;
+                break;
+            }
+        }
+
+        if (!found) {
+            strcpy(authors[uniqueAuthors], library[i].author);
+            count[uniqueAuthors]++;
+            uniqueAuthors++;
+        }
+    }
+
+    printf("Book count by author:\n");
+    for (int i = 0; i < uniqueAuthors; i++) {
+        printf("%s: %d\n", authors[i], count[i]);
+    }
+}
+
+void displayStatistics(struct Book library[], int numBooks) {
+    if (numBooks == 0) {
+        printf("Library is empty.\n");
+        return;
+    }
+
+    int earliestYear = library[0].year, latestYear = library[0].year;
+
+    for (int i = 1; i < numBooks; i++) {
+        if (library[i].year < earliestYear) {
+            earliestYear = library[i].year;
+        }
+        if (library[i].year > latestYear) {
+            latestYear = library[i].year;
+        }
+    }
+
+    printf("Library Statistics:\n");
+    printf("Total books: %d\n", numBooks);
+    printf("Earliest publication year: %d\n", earliestYear);
+    printf("Latest publication year: %d\n", latestYear);
+}
+
+void clearLibrary(struct Book library[], int *numBooks) {
+    *numBooks = 0;
+    printf("All books have been cleared from the library.\n");
+}
