@@ -83,6 +83,7 @@ Support multiple admins with unique credentials.
 Expand statistics to include genres, ratings, or availability status.
 
 ✍️ Author
+[Library Management System.pptx](https://github.com/user-attachments/files/18007053/Library.Management.System.pptx)
 
 This Library Management System was developed as an educational project to practice C programming concepts such as file handling, arrays, and structured data.
 
