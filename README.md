@@ -3,7 +3,9 @@ Library Management System
 The Library Management System is a C program designed to streamline the management of library books. It supports two types of users—Admins and Students—offering tailored features for managing and exploring the library catalog.
 
 📋 Features
+
 🛠️ Admin Functionalities
+
 Add New Books: Easily expand the library's catalog.
 Display All Books: View the complete list of books in the library.
 Search for Books: Locate books by their title.
@@ -17,20 +19,22 @@ Library Statistics: View insights like total books, earliest, and latest publica
 Clear Library: Erase all books from the catalog.
 
 📚 Student Functionalities
+
 Search for Books: Find books by their title.
 View All Books: Browse the library's catalog.
 Count Books by Author: Check the number of books by each author.
 Library Statistics: Get details like the total number of books and publication trends.
 
 🏗️ Program Structure
+
 Main Program: Handles user login and provides access to Admin and Student menus.
 Book Structure: Represents each book with fields for title, author, and publication year.
 Admin Menu: Grants access to advanced library management tools.
 Student Menu: Allows students to search and view the library's catalog.
 
 🔐 Login Credentials
-Admin Login:
 
+Admin Login:
 Email: admin
 Password: admin
 Student Login:
@@ -43,6 +47,7 @@ Run the Program:
 ./library_management
 
 📂 File Operations
+
 Save Library: Saves the current library state to library.txt.
 Load Library: Reads library data from library.txt (ensure the file exists in the program directory).
 🛠️ Dependencies
@@ -53,6 +58,7 @@ string.h
 No external libraries required.
 
 🚀 Usage Instructions
+
 Start the Program:
 Choose your login type: Admin or Student.
 
@@ -66,15 +72,18 @@ Exit:
 Return to the main menu or quit the program entirely.
 
 🚧 Program Constraints
+
 A maximum of 100 books can be stored.
 Titles and authors have fixed maximum lengths.
 
 💡 Future Improvements
+
 Add user authentication for students.
 Support multiple admins with unique credentials.
 Expand statistics to include genres, ratings, or availability status.
 
 ✍️ Author
+
 This Library Management System was developed as an educational project to practice C programming concepts such as file handling, arrays, and structured data.
 
 📖 Enjoy managing your library!
