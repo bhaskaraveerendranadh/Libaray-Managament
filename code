@@ -3,10 +3,10 @@
 #include <string.h>
 
 #define MAX_TITLE_LENGTH 100
-#define MAX_AUTHOR_LENGTH 50
+#define MAX_AUTHOR_LENGTH 100
 #define MAX_BOOKS 100
-#define ADMIN_EMAIL "admin"
-#define ADMIN_PASSWORD "admin"
+#define ADMIN_EMAIL "admin@gmail.com"
+#define ADMIN_PASSWORD "library"
 
 struct Book {
     char title[MAX_TITLE_LENGTH];
@@ -87,7 +87,7 @@ int adminLogin() {
 
     if (strcmp(email, ADMIN_EMAIL) == 0 && strcmp(password, ADMIN_PASSWORD) == 0) {
         printf("Login successful!\n");
-        return 1; // Authentication successful
+        return 1; 
     } else {
         printf("Invalid email or password.\n");
         return 0; // Authentication failed
